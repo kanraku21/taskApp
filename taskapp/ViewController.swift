@@ -16,7 +16,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     @IBOutlet weak var searchBar: UISearchBar!
     
     
-    var toDoItems: Results<Task>?
+    
     
     let realm = try! Realm()
     
@@ -31,10 +31,13 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         searchBar.delegate = self
         
         
-        let realm = try! Realm()
-        toDoItems = realm.objects(Task.self)
         
     }
+    
+    //@objc func dismissKeyboard(){
+    // キーボードを閉じる
+    //  view.endEditing(true)
+    
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return taskArray.count
@@ -90,15 +93,21 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         }
     }
     
+    
+    //カテゴリー検索機能
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        print("サーチバー")
         let realm = try! Realm()
         
-        
-        toDoItems = realm.objects(Task.self).filter("category CONTAINS %@", searchBar.text!)
-        
+        if searchBar.text!.isEmpty {
+            taskArray = realm.objects(Task.self)
+        } else {
+            taskArray = realm.objects(Task.self).filter("category CONTAINS %@", searchBar.text!)
+        }
         
         tableView.reloadData()
+        
+        // キーボードを閉じる
+        searchBar.endEditing(true)
     }
     
     
